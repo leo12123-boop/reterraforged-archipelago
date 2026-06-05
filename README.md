@@ -29,3 +29,17 @@ This code is based on [NeoTerraForged 1.20.1](https://github.com/equalizer32/Neo
 ## License
 
 MIT License — consistent with the upstream [TerraForged](https://github.com/dsmith/terraforged) project.
+
+## Repository Scope
+
+This repository is an architecture/reference extract, not a standalone buildable NeoTerraForged module. The files under `src/` show the important archipelago implementation paths and final terrain/biome logic, but they are not a complete replacement for the full mod source tree.
+
+When porting this system, please check the surrounding integration points in the target version:
+
+- `TerrainType.java`: island terrain registrations such as `ISLAND`, `ISLAND_BEACH`, and `ISLAND_MOUNTAINS`.
+- `Preset.java` and `Presets.java`: preset serialization/default values for `IslandSettings`.
+- `WorldLookup.java`: final `ISLAND_BEACH -> BEACH` remapping used by lookup/cache paths.
+- `RTFTranslationKeys.java` and `RTFLanguageProvider.java`: UI labels/tooltips for the island settings page.
+- River carving integration: `RiverTerrainFade.java` is included as the shared fade rule, but a full port also needs the corresponding `RiverCarver.java` and `Wetland.java` call-site changes.
+
+Some uploaded files also reference the local fake-water-biome system (`FakeWaterBiomeResolver`, `FakeWaterBiomeTarget`, and `FakeWaterBiomeSettingsPage`). That system is separate from the archipelago terrain feature. For a clean 1.21.1 port, either port that system too or remove those references and keep only the archipelago-related logic.
